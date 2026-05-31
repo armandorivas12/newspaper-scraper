@@ -34,13 +34,19 @@ def _news_item(article: Article) -> str:
         <td style="padding:6px 0;font-size:14px;border-bottom:1px solid #f0f0f0;">
           <a href="{article.url}" style="color:#1a0dab;text-decoration:none;font-weight:500;">{article.title}</a>
           <span style="color:#555;"> &mdash; {article.summary}</span>
-          {f'<span style="color:#aaa;font-size:12px;"> · {article.date}</span>' if article.date else ""}
+          {f'<span style="color:#aaa;font-size:12px;"> &middot; {article.date}</span>' if article.date else ""}
         </td>
       </tr>"""
 
 
-def build_email(opinion_articles: list[Article], news_articles: list[Article], errors: list[str] | None = None) -> str:
+def build_email(
+    opinion_articles: list[Article],
+    news_articles: list[Article],
+    newspaper_overviews: dict[str, str] | None = None,
+    errors: list[str] | None = None,
+) -> str:
     date_str = _format_date_spanish()
+    overviews = newspaper_overviews or {}
 
     opinion_html = "\n".join(_opinion_card(a) for a in opinion_articles)
     if not opinion_articles:
@@ -52,10 +58,13 @@ def build_email(opinion_articles: list[Article], news_articles: list[Article], e
 
     news_sections = []
     for paper_name, articles in news_by_paper.items():
+        overview = overviews.get(paper_name, "")
+        overview_html = f'<div style="font-size:14px;color:#555;line-height:1.5;padding:10px 0 6px 0;border-bottom:1px solid #eee;margin-bottom:4px;">{overview}</div>' if overview else ""
         rows = "\n".join(_news_item(a) for a in articles)
         news_sections.append(f"""
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:20px;">
       <div style="font-weight:bold;font-size:14px;color:#333;padding:8px 0;border-bottom:2px solid #1a0dab;">{paper_name}</div>
+      {overview_html}
       <table style="width:100%;border-collapse:collapse;">{rows}</table>
     </div>""")
 

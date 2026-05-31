@@ -85,20 +85,17 @@ def main():
     if priority_found:
         logger.info("Priority authors found: %s", ", ".join(set(priority_found)))
 
-    # 3. Apply limits
+    # 3. Apply limits (opinion has a global cap; news relies on per-section limits in config)
     opinion = apply_limits(opinion, cfg.max_opinion_articles)
-    news = apply_limits(news, cfg.max_news_articles)
     logger.info("After limits: %d opinion, %d news", len(opinion), len(news))
 
     # 4. Summarize
-    from summarizer import summarize_articles
-    logger.info("Summarizing %d articles with Claude Haiku...", len(opinion) + len(news))
-    opinion = summarize_articles(opinion, cfg.anthropic_api_key)
-    news = summarize_articles(news, cfg.anthropic_api_key)
+    from summarizer import summarize_all
+    opinion, newspaper_overviews, news = summarize_all(opinion, news, cfg.anthropic_api_key)
 
     # 5. Build email
     from email_builder import build_email, _format_date_spanish
-    html = build_email(opinion, news, errors if errors else None)
+    html = build_email(opinion, news, newspaper_overviews, errors if errors else None)
 
     if args.dry_run:
         print(html)
