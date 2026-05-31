@@ -1,0 +1,31 @@
+name: Dominican News Digest
+
+on:
+  schedule:
+    - cron: '30 11 * * *'    # 7:30 AM Dominican time (UTC-4)
+  workflow_dispatch: {}       # Manual trigger from Actions tab
+
+jobs:
+  digest:
+    name: Scrape, Summarize & Send Digest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run digest pipeline
+        run: python pipeline.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}

@@ -1,0 +1,69 @@
+# ============================================================
+# Dominican News Digest — Configuración
+# ============================================================
+# Edita este archivo para personalizar tu resumen diario.
+# No necesitas saber programar — solo sigue el formato.
+# ============================================================
+
+# Dirección de email donde llega el resumen
+email:
+  to: "rivas.armandoj@gmail.com"
+  subject_prefix: "Resumen Diario"
+
+# Cuántos artículos incluir como máximo
+limits:
+  max_opinion_articles: 15
+  max_news_articles: 25
+
+# Autores prioritarios — SIEMPRE se incluyen y se destacan
+# aunque se llegue al límite de artículos.
+# Incluye variantes con y sin acento porque los sitios son inconsistentes.
+priority_authors:
+  - "Anibal de Castro"
+  - "Aníbal de Castro"
+  - "Jaime Aristy Escuder"
+  - "Flavio Darío Espinal"
+  - "Flavio Dario Espinal"
+  - "Inés Aizpún"
+  - "Ines Aizpun"
+
+# Periódicos y secciones a incluir
+# type: "opinion" = resumen largo (3-4 oraciones) + enlace
+# type: "news"    = resumen breve (1 oración)
+newspapers:
+
+  - name: "Listín Diario"
+    base_url: "https://listindiario.com"
+    sections:
+      - path: "/puntos-de-vista"
+        type: "opinion"
+        max_articles: 8
+      - path: "/la-republica"
+        type: "news"
+        max_articles: 10
+      - path: "/economia"
+        type: "news"
+        max_articles: 5
+
+  - name: "Diario Libre"
+    base_url: "https://www.diariolibre.com"
+    sections:
+      - path: "/opinion"
+        type: "opinion"
+        max_articles: 8
+      - path: "/politica"
+        type: "news"
+        max_articles: 8
+      - path: "/economia"
+        type: "news"
+        max_articles: 5
+
+  - name: "Hoy"
+    base_url: "https://hoy.com.do"
+    sections:
+      - path: "/opinion/"
+        type: "opinion"
+        max_articles: 6
+      - path: "/economia/"
+        type: "news"
+        max_articles: 5
