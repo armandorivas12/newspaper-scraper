@@ -39,7 +39,7 @@ def summarize_articles(articles: list[Article], api_key: str) -> list[Article]:
 
         try:
             response = client.messages.create(
-                model="claude-haiku-4-5-20241022",
+                model="claude-haiku-4-5-20251001",
                 max_tokens=max_tokens,
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_content}],

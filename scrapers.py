@@ -36,6 +36,26 @@ def _extract_text(soup: BeautifulSoup, max_chars: int = 2000) -> str:
     return text[:max_chars]
 
 
+MONTHS_ES = {
+    1: "ene", 2: "feb", 3: "mar", 4: "abr", 5: "may", 6: "jun",
+    7: "jul", 8: "ago", 9: "sep", 10: "oct", 11: "nov", 12: "dic",
+}
+
+
+def _parse_date_from_url(url: str) -> str | None:
+    # Listín format: /20260531/ (8 digits)
+    m = re.search(r"/(\d{4})(\d{2})(\d{2})/", url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        return f"{d} {MONTHS_ES.get(mo, mo)} {y}"
+    # Diario Libre format: /2026/05/31/
+    m = re.search(r"/(\d{4})/(\d{2})/(\d{2})/", url)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        return f"{d} {MONTHS_ES.get(mo, mo)} {y}"
+    return None
+
+
 def _is_article_url(href: str, section_path: str) -> bool:
     """Check if a URL looks like an article (has a date pattern in it)."""
     section_clean = section_path.rstrip("/")
@@ -81,6 +101,7 @@ def _scrape_listin_section(base_url: str, section: SectionConfig, newspaper_name
             url=full_url,
             newspaper=newspaper_name,
             section_type=section.type,
+            date=_parse_date_from_url(full_url),
         ))
 
         if len(articles) >= section.max_articles:
@@ -146,6 +167,7 @@ def _scrape_diariolibre_section(base_url: str, section: SectionConfig, newspaper
             url=full_url,
             newspaper=newspaper_name,
             section_type=section.type,
+            date=_parse_date_from_url(full_url),
         ))
 
         if len(articles) >= section.max_articles:
@@ -214,6 +236,7 @@ def _scrape_hoy_section(base_url: str, section: SectionConfig, newspaper_name: s
             url=full_url,
             newspaper=newspaper_name,
             section_type=section.type,
+            date=_parse_date_from_url(full_url),
         ))
 
         if len(articles) >= section.max_articles:

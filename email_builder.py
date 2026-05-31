@@ -24,7 +24,7 @@ def _opinion_card(article: Article) -> str:
         <a href="{article.url}" style="color:#1a0dab;text-decoration:none;font-weight:600;">{article.title}</a>
       </div>
       <div style="font-size:14px;color:#444;line-height:1.5;margin-bottom:8px;">{article.summary}</div>
-      <div style="font-size:12px;color:#888;">{article.newspaper} &middot; <a href="{article.url}" style="color:#888;">Leer art&iacute;culo &rarr;</a></div>
+      <div style="font-size:12px;color:#888;">{article.newspaper}{" &middot; " + article.date if article.date else ""} &middot; <a href="{article.url}" style="color:#888;">Leer art&iacute;culo &rarr;</a></div>
     </div>"""
 
 
@@ -34,6 +34,7 @@ def _news_item(article: Article) -> str:
         <td style="padding:6px 0;font-size:14px;border-bottom:1px solid #f0f0f0;">
           <a href="{article.url}" style="color:#1a0dab;text-decoration:none;font-weight:500;">{article.title}</a>
           <span style="color:#555;"> &mdash; {article.summary}</span>
+          {f'<span style="color:#aaa;font-size:12px;"> · {article.date}</span>' if article.date else ""}
         </td>
       </tr>"""
 
